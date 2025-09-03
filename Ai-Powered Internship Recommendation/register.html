@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PM Internship – Registration</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: url("WhatsApp Image 2025-08-31 at 15.01.27_ad1133c6.jpg") no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0A5BE0;
+      margin-bottom: 15px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin: 8px 0;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+    .btn img {
+      width: 20px; height: 20px;
+      margin-right: 10px;
+    }
+    .btn:hover { background: #f2f2f2; }
+
+    .divider {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      color: #aaa;
+      font-size: 12px;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #ddd;
+      margin: 0 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .submit {
+      background: #0A5BE0;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+    }
+    .submit:hover { background: #084bb8; }
+
+    .login-link {
+      margin-top: 15px;
+      font-size: 13px;
+    }
+    .login-link a {
+      color: #0A5BE0;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Google Translate Dropdown */
+    .lang-select {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+    }
+    .goog-te-gadget {
+      font-size: 0; /* Hide default text */
+    }
+    .goog-te-combo {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+    }
+
+    /* Phone signup popup */
+    #phonePopup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #phonePopup .popup-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+    #phonePopup .popup-content input {
+      margin: 10px 0;
+    }
+    #phonePopup .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    #phonePopup .submit-phone {
+      background: #0A5BE0;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #phonePopup .submit-phone:hover { background: #084bb8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Google Translate Dropdown -->
+    <div class="lang-select" id="google_translate_element"></div>
+
+    <div class="logo">PM Internship</div>
+    <div class="subtitle">AI-Based Smart Allocation for Internships</div>
+
+    <!-- Social login buttons -->
+    <button class="btn" onclick="signInWithGoogle()">
+      <img src="https://img.icons8.com/color/48/google-logo.png"/> Sign up with Google
+    </button>
+    <button class="btn"><img src="https://img.icons8.com/color/48/microsoft.png"/> Sign up with Microsoft</button>
+    <button class="btn"><img src="https://img.icons8.com/color/48/linkedin.png"/> Sign up with LinkedIn</button>
+    <button class="btn" onclick="showPhonePopup()"><img src="https://img.icons8.com/ios-filled/50/000000/phone.png"/> Sign up with Phone</button>
+
+    <div class="divider">or use your email</div>
+
+    <!-- Email form -->
+    <form onsubmit="redirectHome(event)">
+      <input type="text" placeholder="Full Name" required/>
+      <input type="email" placeholder="Email Address" required/>
+      <input type="password" placeholder="Password" required/>
+      <button type="submit" class="btn submit">Register</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <!-- Phone signup popup -->
+  <div id="phonePopup">
+    <div class="popup-content">
+      <div class="close-btn" onclick="closePhonePopup()">×</div>
+      <h3>Sign up with Phone</h3>
+      <input type="text" placeholder="Full Name" id="phoneName" required/>
+      <input type="tel" placeholder="Phone Number" id="phoneNumber" required/>
+      <button class="submit-phone" onclick="submitPhone()">Submit</button>
+    </div>
+  </div>
+
+  <!-- Google Translate Script -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,bn,ta,te,ml,mr,gu,kn,pa,or,as', // Indian languages
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+    // Redirect to home for email registration (dummy)
+    function redirectHome(event) {
+      event.preventDefault();
+      alert('Registered! Redirecting to homepage...');
+      window.location.href = "index.html";
+    }
+
+    // ------------------- Google OAuth -------------------
+    function signInWithGoogle() {
+      const clientId = '1003472883920-i537e84nlra65ulgh8gf69ngmaccca0m.apps.googleusercontent.com';
+      const redirectUri = 'http://127.0.0.1:5500/register.html';
+      const scope = 'email profile';
+      const responseType = 'token';
+
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=${responseType}`;
+      window.location.href = authUrl;
+    }
+
+    window.onload = function() {
+      if(window.location.hash){
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const token = params.get('access_token');
+        if(token){
+          fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          .then(res => res.json())
+          .then(data => {
+            alert('Logged in as: ' + data.email + '\nName: ' + data.name);
+          });
+        }
+      }
+    }
+
+    // ------------------- Phone signup -------------------
+    function showPhonePopup() {
+      document.getElementById('phonePopup').style.display = 'flex';
+    }
+    function closePhonePopup() {
+      document.getElementById('phonePopup').style.display = 'none';
+    }
+    function submitPhone() {
+      const name = document.getElementById('phoneName').value;
+      const phone = document.getElementById('phoneNumber').value;
+      if(name && phone){
+        alert('Phone signup submitted!\nName: '+name+'\nPhone: '+phone);
+        closePhonePopup();
+      } else {
+        alert('Please fill all fields');
+      }
+    }
+  </script>
+</body>
+</html>

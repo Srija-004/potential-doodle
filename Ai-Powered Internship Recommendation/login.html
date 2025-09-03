@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PM Internship – Login</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        background: url("WhatsApp Image 2025-08-31 at 15.01.27_ad1133c6.jpg") no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0A5BE0;
+      margin-bottom: 15px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .submit {
+      background: #0A5BE0;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .submit:hover { background: #084bb8; }
+
+    .signup-link {
+      margin-top: 15px;
+      font-size: 13px;
+    }
+    .signup-link a {
+      color: #0A5BE0;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Google Translate Dropdown */
+    .lang-select {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 1000;
+    }
+    .goog-te-gadget { font-size: 0; } /* Hide default text */
+    .goog-te-combo {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Google Translate Dropdown -->
+    <div class="lang-select" id="google_translate_element"></div>
+
+    <div class="logo">PM Internship</div>
+    <div class="subtitle">AI-Based Smart Allocation for Internships</div>
+
+    <!-- Email login form -->
+    <form onsubmit="redirectDashboard(event)">
+      <input type="email" placeholder="Email Address" required/>
+      <input type="password" placeholder="Password" required/>
+      <button type="submit" class="submit">Login</button>
+    </form>
+
+    <div class="signup-link">
+      Don't have an account? <a href="register.html">Register</a>
+    </div>
+  </div>
+
+  <!-- Google Translate Script -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,bn,ta,te,ml,mr,gu,kn,pa,or,as',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+    // Redirect to dashboard for email login (dummy)
+    function redirectDashboard(event) {
+      event.preventDefault();
+      alert('Logged in! Redirecting to dashboard...');
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>

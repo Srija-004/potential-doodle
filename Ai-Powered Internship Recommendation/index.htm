@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PM Internship – Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      height: 100vh;
+      background: url("WhatsApp Image 2025-08-30 at 18.13.57_036a02f5.jpg") no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); /* dark overlay for text readability */
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      background: rgba(255,255,255,0.85);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    h1 {
+      color: #0A5BE0;
+      margin-bottom: 20px;
+    }
+    p {
+      color: #444;
+      margin-bottom: 30px;
+    }
+    .btn {
+      background: #0A5BE0;
+      color: #fff;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .btn:hover {
+      background: #084bb8;
+    }
+    .lang-select {
+      margin-bottom: 20px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <select class="lang-select" id="language" onchange="setLanguage()">
+      <option value="en">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="bn">বাংলা</option>
+    </select>
+
+    <h1 id="title">Welcome to PM Internship</h1>
+    <p id="subtitle">AI-Based Smart Allocation for Internships</p>
+    <a href="register.html" class="btn" id="btnText">Register / Login</a>
+  </div>
+
+  <script>
+    const translations = {
+      en: {
+        title: "Welcome to PM Internship",
+        subtitle: "AI-Based Smart Allocation for Internships",
+        btnText: "Register / Login"
+      },
+      hi: {
+        title: "पीएम इंटर्नशिप में आपका स्वागत है",
+        subtitle: "इंटर्नशिप के लिए एआई आधारित स्मार्ट आवंटन",
+        btnText: "रजिस्टर / लॉगिन"
+      },
+      bn: {
+        title: "পিএম ইন্টার্নশিপে স্বাগতম",
+        subtitle: "ইন্টার্নশিপের জন্য এআই-ভিত্তিক স্মার্ট বণ্টন",
+        btnText: "রেজিস্টার / লগইন"
+      }
+    };
+
+    function setLanguage() {
+      const lang = document.getElementById("language").value;
+      document.getElementById("title").innerText = translations[lang].title;
+      document.getElementById("subtitle").innerText = translations[lang].subtitle;
+      document.getElementById("btnText").innerText = translations[lang].btnText;
+    }
+  </script>
+</body>
+</html>
+

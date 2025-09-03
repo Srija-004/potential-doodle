@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM Internship | Apply & Dashboard</title>
+<style>
+  * {margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif;}
+  body { 
+    background:url("applynow.jpg") no-repeat center center fixed; 
+    background-size:cover; 
+    color:#333; 
+    overflow-x:hidden; 
+  }
+  header { background:#6a1b9a; color:white; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
+  header h1{ font-size:20px; }
+  header nav a { color:white; margin-left:20px; text-decoration:none; font-weight:bold; }
+  .slide { width:100%; min-height:100vh; padding:30px 0; display:none; transition:0.5s; }
+  .active { display:block; }
+  .container { background:white; width:80%; max-width:600px; margin:30px auto; padding:20px 30px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,0.15); position:relative; }
+  h2,h3 { color:#6a1b9a; margin-bottom:15px; text-align:center; }
+  p { color:#555; text-align:center; margin-bottom:25px; }
+  label { display:block; font-weight:bold; margin:10px 0 5px; }
+  input,textarea { width:100%; padding:10px; font-size:15px; border:1px solid #ccc; border-radius:8px; margin-bottom:15px; }
+  textarea { resize:none; height:100px; }
+  .submit-btn { background:#6a1b9a; color:white; border:none; padding:12px; font-size:16px; border-radius:8px; width:100%; cursor:pointer; transition:0.2s; }
+  .submit-btn:hover { background:#4a0d6a; }
+  table { width:100%; border-collapse:collapse; margin-top:15px; }
+  table th, table td { padding:12px; border-bottom:1px solid #ddd; text-align:left; }
+  table th { background:#eee; }
+  .status { padding:5px 10px; border-radius:5px; font-size:13px; font-weight:bold; }
+  .applied { background:#ffd54f; color:#333; }
+  .review { background:#4fc3f7; color:#fff; }
+  .selected { background:#81c784; color:#fff; }
+  footer { text-align:center; padding:20px; margin-top:40px; background:#6a1b9a; color:white; }
+  .success-message { display:none; text-align:center; color:green; font-weight:bold; margin-top:15px; }
+  .nav-btn { position:absolute; top:10px; right:10px; background:#6a1b9a; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PM Internship</h1>
+  <nav>
+    <a href="home.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="login.html">Logout</a>
+  </nav>
+</header>
+
+<!-- Slide 1: Application Form -->
+<div class="slide active" id="slide1">
+  <div class="container">
+    <h2>Internship Application 📝</h2>
+    <p>Fill in your details to apply for this internship.</p>
+    <form id="applyForm">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" name="fullname" required>
+      <label for="email">Email ID</label>
+      <input type="email" id="email" name="email" required>
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" required>
+      <label for="internship">Internship Role</label>
+      <input type="text" id="internship" name="internship" readonly>
+      <label for="resume">Upload Resume (PDF)</label>
+      <input type="file" id="resume" name="resume" accept=".pdf" required>
+      <label for="cover">Why should we select you?</label>
+      <textarea id="cover" name="cover" required></textarea>
+      <button type="submit" class="submit-btn">Submit Application</button>
+    </form>
+    <div class="success-message" id="successMsg">✅ Application submitted successfully!</div>
+  </div>
+</div>
+
+<!-- Slide 2: Dashboard -->
+<div class="slide" id="slide2">
+  <!-- Profile -->
+  <div class="container">
+    <h2>👩‍🎓 Student Profile</h2>
+    <p><strong>Name:</strong> <span id="profileName">Srija Das</span></p>
+    <p><strong>Email:</strong> <span id="profileEmail">srija@example.com</span></p>
+    <p><strong>Skills:</strong> Web Development, AI/ML, UI Design</p>
+    <p><strong>Location:</strong> Kolkata, India</p>
+    <button class="nav-btn" onclick="showSlide(1)">⬅ Back</button>
+  </div>
+  <!-- Recommended -->
+  <div class="container">
+    <h3>⭐ Recommended Internships</h3>
+    <table>
+      <tr><th>Internship</th><th>Location</th><th>Duration</th><th>Stipend</th></tr>
+      <tr><td>💻 Web Development Intern</td><td>Delhi</td><td>3 Months</td><td>₹8000</td></tr>
+      <tr><td>🤖 AI Research Intern</td><td>Remote</td><td>6 Months</td><td>₹5000</td></tr>
+    </table>
+  </div>
+  <!-- Applied -->
+  <div class="container">
+    <h3>📌 Applied Internships</h3>
+    <table id="appliedTable"><tr><th>Internship</th><th>Status</th></tr></table>
+  </div>
+</div>
+
+<footer>
+  <p>PM Internship | Skill India Initiative</p>
+</footer>
+
+<script>
+  // Autofill internship name
+  const urlParams = new URLSearchParams(window.location.search);
+  document.getElementById("internship").value = internshipName;
+
+  // Show specific slide
+  function showSlide(num){
+    document.querySelectorAll('.slide').forEach(slide => slide.classList.remove('active'));
+    document.getElementById('slide'+num).classList.add('active');
+  }
+
+  // Load previous applications
+  function loadApplications() {
+    const table = document.getElementById("appliedTable");
+    const apps = JSON.parse(localStorage.getItem("appliedInternships")) || [];
+    table.innerHTML = '<tr><th>Internship</th><th>Status</th></tr>';
+    apps.forEach(role=>{
+      const row = table.insertRow(-1);
+      const cell1 = row.insertCell(0);
+      const cell2 = row.insertCell(1);
+      cell1.textContent = role;
+      cell2.innerHTML = '<span class="status applied">Applied</span>';
+    });
+  }
+  loadApplications();
+
+  // Form submit
+  document.getElementById("applyForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const name = document.getElementById("fullname").value;
+    const email = document.getElementById("email").value;
+    const internshipName = document.getElementById("internshiprole").value;
+
+    // Save to localStorage
+    let apps = JSON.parse(localStorage.getItem("appliedInternships")) || [];
+    apps.push(role);
+    localStorage.setItem("appliedInternships", JSON.stringify(apps));
+
+    // Update profile info
+    document.getElementById("profileName").textContent = name;
+    document.getElementById("profileEmail").textContent = email;
+
+    // Show success message
+    document.getElementById("successMsg").style.display = "block";
+
+    // Switch to dashboard after 1s
+    setTimeout(()=>{
+      showSlide(2);
+      document.getElementById("successMsg").style.display = "none";
+      loadApplications();
+    }, 1000);
+
+    this.reset();
+  });
+</script>
+
+</body>
+</html>

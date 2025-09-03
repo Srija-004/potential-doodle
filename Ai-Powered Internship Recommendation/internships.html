@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PM Internship – Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+    body {
+      background: #1f1e1e;
+      min-height: 100vh;
+      color: #f8f8f8;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: -1;
+    }
+
+    header {
+      background: rgba(106, 27, 154, 0.9);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 { font-size: 22px; font-weight: bold; }
+
+    header nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    header nav a:hover { color: #ffd54f; }
+
+    .welcome {
+      padding: 40px;
+      text-align: center;
+      background: rgba(52, 141, 225, 0.527);
+      margin: 30px auto;
+      width: 85%;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
+    }
+
+    .welcome h2 { font-size: 28px; margin-bottom: 10px; }
+    .welcome p { font-size: 16px; color: #ddd; }
+
+    .filters {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin: 20px auto;
+      width: 85%;
+      flex-wrap: wrap;
+    }
+
+    .filters input, .filters select {
+      padding: 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: none;
+      flex: 1;
+      min-width: 180px;
+      background: rgba(255,255,255,0.8);
+      color: #333;
+    }
+
+    /* ✅ Added Map Styling */
+    #indiaMap {
+      height: 400px;
+      width: 85%;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .category {
+      padding: 20px 30px;
+    }
+
+    .category-heading {
+      font-size: 22px;
+      margin: 20px 0;
+      color: #ffd54f;
+      text-align: left;
+    }
+
+    .internship-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease, background 0.3s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      background: rgba(130, 58, 202, 0.6);
+    }
+
+    .card h3 { color: #ffd54f; margin-bottom: 10px; }
+    .card p { color: #eee; margin-bottom: 10px; }
+    .apply-btn {
+      display: inline-block;
+      background: #ffd54f;
+      color: #333;
+      padding: 8px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .apply-btn:hover { background: #ffca28; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      background: rgba(106, 27, 154, 0.9);
+      color: white;
+    }
+    
+  </style>
+</head>
+<body>
+  <header>PM Internship </header>
+
+  <div class="filters">
+    <input type="text" id="searchInput" placeholder="🔍 Search internships...">
+    <select id="locationFilter">
+      <option value="">🌍 Location</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Mumbai">Mumbai</option>
+      <option value="Bangalore">Bangalore</option>
+      <option value="Chennai">Chennai</option>
+      <option value="Hyderabad">Hyderabad</option>
+      <option value="Pune">Pune</option>
+      <option value="Kolkata">Kolkata</option>
+      <option value="Ahmedabad">Ahmedabad</option>
+      <option value="Jaipur">Jaipur</option>
+      <option value="Lucknow">Lucknow</option>
+      <option value="Chandigarh">Chandigarh</option>
+      <option value="Bhopal">Bhopal</option>
+      <option value="Indore">Indore</option>
+      <option value="Guwahati">Guwahati</option>
+      <option value="Patna">Patna</option>
+      <option value="Gurgaon">Gurgaon</option>
+      <option value="Noida">Noida</option>
+      <option value="Remote">Remote</option>
+    </select>
+    <select id="durationFilter">
+      <option value="">⏳ Duration</option>
+      <option value="1 Month">1 Month</option>
+      <option value="3 Months">3 Months</option>
+      <option value="6 Months">6 Months</option>
+  </select>
+  <select id="stipendFilter">
+      <option value="">💰 Stipend</option>
+      <option value="Unpaid">Unpaid</option>
+      <option value="0-5000">₹0 - ₹5000</option>
+      <option value="5000+">₹5000+</option>
+  </select>
+  </div>
+
+  <!-- ✅ Map Container -->
+  <div id="indiaMap"></div>
+
+  <!-- 🌐 Tech & IT -->
+<h2 class="category-heading">🌐 Tech & IT Internships</h2>
+<div class="internship-list">
+  <div class="card"><h3>Web Development Intern</h3><p>Work on front-end and back-end web projects.</p><a href="applynow.html?role=Web Development Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>App Development Intern</h3><p>Design and develop mobile applications.</p><a href="applynow.html?role=App Development Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Software Engineering Intern</h3><p>Assist in software development and testing.</p><a href="applynow.html?role=Software Engineering Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Data Science Intern</h3><p>Analyze and interpret complex datasets.</p><a href="applynow.html?role=Data Science Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>AI/Machine Learning Intern</h3><p>Work on AI/ML models and algorithms.</p><a href="applynow.html?role=AI/Machine Learning Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Cybersecurity Intern</h3><p>Identify and prevent security vulnerabilities.</p><a href="applynow.html?role=Cybersecurity Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>UI/UX Design Intern</h3><p>Create user-friendly designs for platforms.</p><a href="applynow.html?role=UI/UX Design Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Cloud Computing Intern</h3><p>Learn cloud services like AWS, Azure, GCP.</p><a href="applynow.html?role=Cloud Computing Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Blockchain Intern</h3><p>Work on smart contracts and blockchain apps.</p><a href="applynow.html?role=Blockchain Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>AR/VR Intern</h3><p>Build immersive AR/VR experiences.</p><a href="applynow.html?role=AR/VR Intern" class="apply-btn">Apply Now</a></div>
+</div>
+<!-- 💼 Business & Management -->
+<h2 class="category-heading">💼 Business & Management Internships</h2>
+<div class="internship-list">
+  <div class="card"><h3>Business Development Intern</h3><p>Identify growth opportunities and expand reach.</p><a href="applynow.html?role=Business Development Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Marketing Intern</h3><p>Work on digital marketing and branding.</p><a href="applynow.html?role=Marketing Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Human Resources (HR) Intern</h3><p>Support recruitment and employee engagement.</p><a href="applynow.html?role=HR Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Project Management Intern</h3><p>Assist in project planning and execution.</p><a href="applynow.html?role=Project Management Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Operations Intern</h3><p>Support daily business operations.</p><a href="applynow.html?role=Operations Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Finance Intern</h3><p>Assist in budgeting and financial reporting.</p><a href="applynow.html?role=Finance Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Sales Intern</h3><p>Help with client outreach and proposals.</p><a href="applynow.html?role=Sales Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Supply Chain Intern</h3><p>Assist in logistics and inventory management.</p><a href="applynow.html?role=Supply Chain Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Consulting Intern</h3><p>Support client projects and research.</p><a href="applynow.html?role=Consulting Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Entrepreneurship Intern</h3><p>Work on startup ideas and innovation.</p><a href="applynow.html?role=Entrepreneurship Intern" class="apply-btn">Apply Now</a></div>
+</div>
+
+<!-- 🎨 Creative & Media -->
+<h2 class="category-heading">🎨 Creative & Media Internships</h2>
+<div class="internship-list">
+  <div class="card"><h3>Graphic Design Intern</h3><p>Create posters and digital graphics.</p><a href="applynow.html?role=Graphic Design Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Content Writing Intern</h3><p>Write blogs, articles, and reports.</p><a href="applynow.html?role=Content Writing Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Social Media Management Intern</h3><p>Manage posts and engagement online.</p><a href="applynow.html?role=Social Media Management Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Video Editing Intern</h3><p>Edit and enhance promotional videos.</p><a href="applynow.html?role=Video Editing Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Animation & VFX Intern</h3><p>Work on 2D/3D animation and effects.</p><a href="applynow.html?role=Animation & VFX Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Journalism Intern</h3><p>Assist in reporting and news research.</p><a href="applynow.html?role=Journalism Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Photography Intern</h3><p>Work on creative photoshoots and editing.</p><a href="applynow.html?role=Photography Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Advertising Intern</h3><p>Assist in ad campaigns and branding.</p><a href="applynow.html?role=Advertising Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Music Production Intern</h3><p>Support audio editing and music projects.</p><a href="applynow.html?role=Music Production Intern" class="apply-btn">Apply Now</a></div>
+</div>
+
+<!-- 🔬 Science & Research -->
+<h2 class="category-heading">🔬 Science & Research Internships</h2>
+<div class="internship-list">
+  <div class="card"><h3>Biotechnology Intern</h3><p>Assist in biotech lab experiments.</p><a href="applynow.html?role=Biotechnology Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Research & Development (R&D) Intern</h3><p>Support ongoing R&D projects.</p><a href="applynow.html?role=Research & Development (R&D) Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Electronics Intern</h3><p>Work on electronics design and testing.</p><a href="applynow.html?role=Electronics Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Mechanical Engineering Intern</h3><p>Assist in mechanical systems design.</p><a href="applynow.html?role=Mechanical Engineering Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Chemistry Intern</h3><p>Work on chemical lab research and analysis.</p><a href="applynow.html?role=Chemistry Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Physics Intern</h3><p>Assist in applied physics experiments.</p><a href="applynow.html?role=Physics Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Environmental Science Intern</h3><p>Work on sustainability and eco-projects.</p><a href="applynow.html?role=Environmental Science Intern" class="apply-btn">Apply Now</a></div>
+  <div class="card"><h3>Biomedical Intern</h3><p>Assist in medical device research.</p><a href="applynow.html?role=Biomedical Intern" class="apply-btn">Apply Now</a></div>
+</div>
+
+</div>
+
+<footer>
+  <p>PM Internship | Skill India Initiative</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  window.onload = function() {
+    const searchInput = document.getElementById("searchInput");
+    const locationFilter = document.getElementById("locationFilter");
+    const cards = document.querySelectorAll(".card");
+
+    function filterInternships() {
+      const text = searchInput.value.toLowerCase();
+      const location = locationFilter.value;
+      cards.forEach(card => {
+        const matchesText = card.innerText.toLowerCase().includes(text);
+        const matchesLocation = !location || card.dataset.location === location;
+        card.style.display = (matchesText && matchesLocation) ? "block" : "none";
+      });
+    }
+
+    searchInput.addEventListener("keyup", filterInternships);
+    locationFilter.addEventListener("change", filterInternships);
+
+    // Initialize India map
+    var map = L.map('indiaMap').setView([22.9734, 78.6569], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var cities = [
+      { name: "Delhi", coords: [28.6139, 77.2090] },
+      { name: "Mumbai", coords: [19.0760, 72.8777] },
+      { name: "Bangalore", coords: [12.9716, 77.5946] },
+      { name: "Chennai", coords: [13.0827, 80.2707] },
+      { name: "Hyderabad", coords: [17.3850, 78.4867] },
+      { name: "Pune", coords: [18.5204, 73.8567] },
+      { name: "Kolkata", coords: [22.5726, 88.3639] },
+      { name: "Ahmedabad", coords: [23.0225, 72.5714] },
+      { name: "Jaipur", coords: [26.9124, 75.7873] },
+      { name: "Lucknow", coords: [26.8467, 80.9462] },
+      { name: "Chandigarh", coords: [30.7333, 76.7794] },
+      { name: "Bhopal", coords: [23.2599, 77.4126] },
+      { name: "Indore", coords: [22.7196, 75.8577] },
+      { name: "Guwahati", coords: [26.1445, 91.7362] },
+      { name: "Patna", coords: [25.5941, 85.1376] },
+      { name: "Gurgaon", coords: [28.4595, 77.0266] },
+      { name: "Noida", coords: [28.5355, 77.3910] }
+    ];
+
+    cities.forEach(city => {
+      L.marker(city.coords).addTo(map)
+        .bindPopup("<b>" + city.name + "</b><br>Click to filter internships")
+        .on('click', function() {
+          locationFilter.value = city.name;
+          filterInternships();
+        });
+    });
+  };
+</script>
+</body>
+</html>

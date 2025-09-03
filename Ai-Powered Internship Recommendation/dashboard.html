@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PM Internship – Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+    body {
+      background: #f8f9fc;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .navbar h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      background: #003893;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Dashboard heading */
+    .dashboard-title {
+      text-align: center;
+      margin: 30px 0 20px;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    /* Cards */
+    .cards {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 220px;
+    }
+
+    .card h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #555;
+      font-size: 14px;
+    }
+
+    /* Map */
+    #map {
+      height: 500px;
+      width: 90%;
+      margin: 0 auto 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <div class="navbar">
+    <h2>PM Internship</h2>
+    <div id="google_translate_element"></div>
+  </div>
+
+  <!-- Blue Links Bar -->
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Guidelines</a>
+    <a href="#">Eligibility</a>
+    <a href="#">Support</a>
+  </div>
+
+  <!-- Dashboard -->
+  <h2 class="dashboard-title">Dashboard</h2>
+
+  <div class="cards">
+    <div class="card">
+      <h3>118K+</h3>
+      <p>Internship Opportunities</p>
+    </div>
+    <div class="card">
+      <h3>36</h3>
+      <p>States/UTs</p>
+    </div>
+    <div class="card">
+      <h3>5</h3>
+      <p>Qualifications</p>
+    </div>
+  </div>
+
+  <!-- Map -->
+  <div id="map"></div>
+
+  <!-- Leaflet Map Script -->
+  <script>
+    var map = L.map('map').setView([22.9734, 78.6569], 5); // Center of India
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(map);
+
+       // 📌 States/UTs with dummy data
+    var states = [
+      { name: "Andhra Pradesh", lat: 15.9129, lon: 79.7400, data: "Total: 3500<br>10th: 200<br>12th: 500<br>ITI: 300<br>Diploma: 700<br>Graduation: 1800" },
+      { name: "Arunachal Pradesh", lat: 28.2180, lon: 94.7278, data: "Total: 1200<br>10th: 50<br>12th: 200<br>ITI: 100<br>Diploma: 300<br>Graduation: 550" },
+      { name: "Assam", lat: 26.2006, lon: 92.9376, data: "Total: 2800<br>10th: 150<br>12th: 400<br>ITI: 250<br>Diploma: 600<br>Graduation: 1400" },
+      { name: "Bihar", lat: 25.0961, lon: 85.3131, data: "Total: 4000<br>10th: 300<br>12th: 700<br>ITI: 400<br>Diploma: 800<br>Graduation: 1800" },
+      { name: "Chhattisgarh", lat: 21.2787, lon: 81.8661, data: "Total: 2200<br>10th: 120<br>12th: 300<br>ITI: 200<br>Diploma: 500<br>Graduation: 1080" },
+      { name: "Delhi", lat: 28.7041, lon: 77.1025, data: "Total: 3200<br>10th: 150<br>12th: 500<br>ITI: 200<br>Diploma: 600<br>Graduation: 1750" },
+      { name: "Goa", lat: 15.2993, lon: 74.1240, data: "Total: 800<br>10th: 40<br>12th: 100<br>ITI: 80<br>Diploma: 200<br>Graduation: 380" },
+      { name: "Gujarat", lat: 22.2587, lon: 71.1924, data: "Total: 5000<br>10th: 400<br>12th: 900<br>ITI: 600<br>Diploma: 1000<br>Graduation: 2100" },
+      { name: "Haryana", lat: 29.0588, lon: 76.0856, data: "Total: 2500<br>10th: 150<br>12th: 400<br>ITI: 250<br>Diploma: 500<br>Graduation: 1200" },
+      { name: "Himachal Pradesh", lat: 31.1048, lon: 77.1734, data: "Total: 1500<br>10th: 100<br>12th: 200<br>ITI: 120<br>Diploma: 300<br>Graduation: 780" },
+      { name: "Jammu and Kashmir", lat: 33.7782, lon: 76.5762, data: "Total: 1800<br>10th: 120<br>12th: 250<br>ITI: 150<br>Diploma: 400<br>Graduation: 880" },
+      { name: "Jharkhand", lat: 23.6102, lon: 85.2799, data: "Total: 2700<br>10th: 150<br>12th: 400<br>ITI: 250<br>Diploma: 500<br>Graduation: 1350" },
+      { name: "Karnataka", lat: 15.3173, lon: 75.7139, data: "Total: 4800<br>10th: 300<br>12th: 800<br>ITI: 500<br>Diploma: 1000<br>Graduation: 2200" },
+      { name: "Kerala", lat: 10.8505, lon: 76.2711, data: "Total: 2600<br>10th: 150<br>12th: 400<br>ITI: 200<br>Diploma: 500<br>Graduation: 1350" },
+      { name: "Madhya Pradesh", lat: 22.9734, lon: 78.6569, data: "Total: 4200<br>10th: 250<br>12th: 700<br>ITI: 400<br>Diploma: 900<br>Graduation: 1950" },
+      { name: "Maharashtra", lat: 19.7515, lon: 75.7139, data: "Total: 5230<br>10th: 400<br>12th: 800<br>ITI: 500<br>Diploma: 900<br>Graduation: 2630" },
+      { name: "Manipur", lat: 24.6637, lon: 93.9063, data: "Total: 1100<br>10th: 50<br>12th: 200<br>ITI: 100<br>Diploma: 250<br>Graduation: 500" },
+      { name: "Meghalaya", lat: 25.4670, lon: 91.3662, data: "Total: 1000<br>10th: 40<br>12th: 150<br>ITI: 100<br>Diploma: 250<br>Graduation: 460" },
+      { name: "Mizoram", lat: 23.1645, lon: 92.9376, data: "Total: 900<br>10th: 40<br>12th: 150<br>ITI: 80<br>Diploma: 200<br>Graduation: 430" },
+      { name: "Nagaland", lat: 26.1584, lon: 94.5624, data: "Total: 950<br>10th: 50<br>12th: 150<br>ITI: 100<br>Diploma: 220<br>Graduation: 430" },
+      { name: "Odisha", lat: 20.9517, lon: 85.0985, data: "Total: 3100<br>10th: 200<br>12th: 500<br>ITI: 300<br>Diploma: 700<br>Graduation: 1400" },
+      { name: "Punjab", lat: 31.1471, lon: 75.3412, data: "Total: 2400<br>10th: 150<br>12th: 400<br>ITI: 200<br>Diploma: 500<br>Graduation: 1150" },
+      { name: "Rajasthan", lat: 27.0238, lon: 74.2179, data: "Total: 3500<br>10th: 200<br>12th: 500<br>ITI: 300<br>Diploma: 800<br>Graduation: 1700" },
+      { name: "Sikkim", lat: 27.5330, lon: 88.5122, data: "Total: 700<br>10th: 30<br>12th: 100<br>ITI: 60<br>Diploma: 150<br>Graduation: 360" },
+      { name: "Tamil Nadu", lat: 11.1271, lon: 78.6569, data: "Total: 5000<br>10th: 300<br>12th: 800<br>ITI: 500<br>Diploma: 1000<br>Graduation: 2400" },
+      { name: "Telangana", lat: 18.1124, lon: 79.0193, data: "Total: 3700<br>10th: 200<br>12th: 500<br>ITI: 300<br>Diploma: 800<br>Graduation: 1900" },
+      { name: "Tripura", lat: 23.9408, lon: 91.9882, data: "Total: 900<br>10th: 40<br>12th: 150<br>ITI: 80<br>Diploma: 200<br>Graduation: 430" },
+      { name: "Uttar Pradesh", lat: 26.8467, lon: 80.9462, data: "Total: 6000<br>10th: 400<br>12th: 1000<br>ITI: 600<br>Diploma: 1200<br>Graduation: 2800" },
+      { name: "Uttarakhand", lat: 30.0668, lon: 79.0193, data: "Total: 1600<br>10th: 100<br>12th: 200<br>ITI: 150<br>Diploma: 350<br>Graduation: 800" },
+      { name: "West Bengal", lat: 22.9868, lon: 87.8550, data: "Total: 4428<br>10th: 200<br>12th: 600<br>ITI: 300<br>Diploma: 700<br>Graduation: 2628" },
+      { name: "Andaman and Nicobar Islands", lat: 11.7401, lon: 92.6586, data: "Total: 500<br>10th: 20<br>12th: 80<br>ITI: 50<br>Diploma: 100<br>Graduation: 250" },
+      { name: "Chandigarh", lat: 30.7333, lon: 76.7794, data: "Total: 600<br>10th: 30<br>12th: 100<br>ITI: 60<br>Diploma: 120<br>Graduation: 290" },
+      { name: "Dadra and Nagar Haveli and Daman and Diu", lat: 20.3974, lon: 72.8328, data: "Total: 400<br>10th: 20<br>12th: 60<br>ITI: 40<br>Diploma: 90<br>Graduation: 190" },
+      { name: "Ladakh", lat: 34.1526, lon: 77.5770, data: "Total: 700<br>10th: 30<br>12th: 100<br>ITI: 60<br>Diploma: 150<br>Graduation: 360" },
+      { name: "Lakshadweep", lat: 10.5667, lon: 72.6417, data: "Total: 300<br>10th: 10<br>12th: 50<br>ITI: 30<br>Diploma: 70<br>Graduation: 140" },
+      { name: "Puducherry", lat: 11.9416, lon: 79.8083, data: "Total: 800<br>10th: 40<br>12th: 100<br>ITI: 60<br>Diploma: 200<br>Graduation: 400" }
+    ];
+
+    states.forEach(s => {
+      L.marker([s.lat, s.lon]).addTo(map)
+        .bindPopup("<b>" + s.name + "</b><br>" + s.data);
+    });
+  </script>
+
+  <!-- Google Translate Widget -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {
+          pageLanguage: 'en',
+          includedLanguages: 'as,bn,en,gu,hi,kn,ml,mr,or,pa,ta,te',
+          layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+        },
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

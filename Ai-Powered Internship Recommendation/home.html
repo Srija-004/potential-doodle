@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PM Internship – AI Recommendation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f9f9f9; }
+
+    /* Header */
+    header {
+      background: #ae80e9;
+      color: #fff;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header .logo { font-size: 22px; font-weight: bold; }
+    nav a {
+      color: #fff; text-decoration: none; margin: 0 12px;
+      font-size: 14px; font-weight: 500;
+    }
+    nav a:hover { text-decoration: underline; }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 100px 20px 60px;
+      color: #fff;
+      position: relative;
+      background: url("WhatsApp Image 2025-08-30 at 18.13.57_036a02f5.jpg") no-repeat center center/cover;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+    .hero h1, .hero p, .hero button, .hero a {
+      position: relative;
+      z-index: 2;
+    }
+    .hero h1 { font-size: 36px; margin-bottom: 15px; }
+    .hero p { font-size: 16px; margin-bottom: 25px; }
+    .hero button {
+      padding: 12px 25px;
+      border: none;
+      background: #fff;
+      color: #0A5BE0;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .hero button:hover { background: #f2f2f2; }
+
+    /* Search Bar */
+    .search-container {
+      margin: 30px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .search-box {
+      width: 60%;
+      max-width: 500px;
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-radius: 30px;
+      padding: 10px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .search-box input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 16px;
+      padding: 8px;
+    }
+    .search-box button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .search-box img {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Features Section */
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px; padding: 40px;
+    }
+    .feature-card {
+      background: #fff; padding: 20px;
+      border-radius: 10px; text-align: center;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+    .feature-card h3 { color: #0A5BE0; margin-bottom: 10px; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #0b7376;
+      color: #fff;
+      font-size: 13px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    /* Translate Dropdown */
+    #google_translate_element {
+      display: inline-block;
+      margin-left: 10px;
+    }
+    .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon {
+      display: none !important;
+    }
+    body { top: 0px !important; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">PM Internship</div>
+    <nav>
+      <a href="home.html">Home</a>
+      <div id="google_translate_element"></div>
+      <a href="internships.html">Internships</a>
+      <a href="eligibility.html">Eligibility</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#">About</a>
+      <a href="register.html">Register/Login</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <h1>AI-Powered Internship Recommendation</h1>
+    <p>Smart, Simple, and Personalized Internship Matches for Youth Across India</p>
+    <a href="applynow.html">
+      <button>Get Started</button>
+    </a>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-container">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search for internships..." />
+      <button><img src="https://img.icons8.com/ios-filled/50/000000/search--v1.png"/></button>
+      <button onclick="startVoiceSearch()"><img src="https://img.icons8.com/ios-filled/50/000000/microphone.png"/></button>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature-card">
+      <h3>🎯 Personalized</h3>
+      <p>Get 3-5 top internship recommendations based on your skills, education & interests.</p>
+    </div>
+    <div class="feature-card">
+      <h3>📱 Mobile Friendly</h3>
+      <p>Designed for easy access even in rural & low-internet regions.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🌍 Multilingual</h3>
+      <p>Supports regional languages for first-generation learners.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    PM Internship | Skill India Initiative
+  </footer>
+
+  <!-- Script -->
+  <script>
+    function startVoiceSearch() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Sorry, your browser doesn't support voice search. Try using Google Chrome.");
+        return;
+      }
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "en-IN";
+      recognition.start();
+      recognition.onresult = function(event) {
+        document.getElementById("searchInput").value = event.results[0][0].transcript;
+      };
+      recognition.onerror = function(event) {
+        alert("Error with voice recognition: " + event.error);
+      };
+    }
+
+    // Google Translate
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,bn,ta,te,mr,gu,kn,ml,pa,or,as,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
